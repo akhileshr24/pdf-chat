@@ -5,16 +5,20 @@ from fastapi import FastAPI
 
 from app.api.routes import router
 from app.generation.pipeline import RAGPipeline
+from app.database.connection import init_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize the RAG pipeline once at startup.
+    # Initialize SQLite database
+    init_db()
+
+    # Initialize the RAG pipeline once at startup
     app.state.rag_pipeline = RAGPipeline()
 
     yield
 
-    # Application shutdown.
+    # Application shutdown
     del app.state.rag_pipeline
 
 
